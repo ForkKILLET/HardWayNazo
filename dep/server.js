@@ -11,13 +11,14 @@ http.createServer((req, res) => {
 	fs.access(file, fs.constants.R_OK, err => {
 		if (err) {
 res.writeHead(404, res_head)
-			file = "404.html"
-			console.log("-->> 404.html.")
+			file = "_/404.html"
+			console.log("-->> 404")
 		}
 		fs.readFile(file, (err, data) => {
 			if (err) {
 res.writeHead(502, res_head)
 res.write(`<h1>502<h1/>`)
+				console.log("--!! 502")
 			}
 			else {
 res.writeHead(200, res_head)

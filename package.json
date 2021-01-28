@@ -1,0 +1,33 @@
+{
+  "name": "hardwaynazo",
+  "version": "0.1.0",
+  "description": "HardWayNazo",
+  "main": "start.html",
+  "dependencies": {
+    "aes": "^0.1.0",
+    "browserify": "^17.0.0",
+    "jquery": "^3.5.1",
+    "vconsole": "^3.4.0"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-browserify": "^0.5.1",
+    "gulp-rename": "^2.0.0"
+  },
+  "scripts": {
+    "test": "node dep/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ForkFG/HardWayNazo.git"
+  },
+  "keywords": [
+    "nazo"
+  ],
+  "author": "ForkKILLET",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ForkFG/HardWayNazo/issues"
+  },
+  "homepage": "https://github.com/ForkFG/HardWayNazo#readme"
+}

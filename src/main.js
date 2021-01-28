@@ -1,9 +1,13 @@
+const $			= require("jquery")
+const VConsole	= require("vconsole")
+
 $(() => {
 try {
 
 	const vc = new VConsole()
 
-	let lv = JSON.parse($("nazo").text())
+	const lv = JSON.parse($("nazo").html())
+	const path = location.pathname.match(/\/(.*)\./)[1]
 
 	const $body = $("body").append(`
 <style>
@@ -71,7 +75,7 @@ ${ lv.note ? `
 	$title = $(`<title>${ lv.id }# HardWayNazo</title>`).appendTo($("head"))
 	$main = $(`
 <main>
-	<h1>${ lv.id }# ${ location.pathname.match(/\/(.*?)\./)[1] }</h1>
+	<h1>${ lv.id }# ${path}</h1>
 	<p class="hint"></p>
 	<p class="note"></p>
 	<p class="play"></p>
@@ -82,6 +86,7 @@ ${ lv.note ? `
 	$play = $(".play")
 	
 	const esc = s => s
+		.replace(/ /g, "&nbsp;")
 		.replace(/</g, "&lt;").replace(/>/g, "&gt;")
 		.replace(/\*\*(.*)\*\*/g, "<b>$1</b>")
 	const out = (t, $t, tw) => {
@@ -110,7 +115,8 @@ ${ lv.note ? `
 	if (lv.note) out(lv.note.text, $note, false)
 
 	if (lv.ascend.method == "input") {
-		const $in = $("<input/>").appendTo($play)
+		const $in = $(`<input />`).appendTo($play)
+			.val(lv.ascend.default)
 		const jump = f => {
 			if (f) location.href = $in.val() + ".html"
 		}
