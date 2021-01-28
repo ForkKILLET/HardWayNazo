@@ -3,12 +3,12 @@ const VConsole	= require("vconsole")
 
 $(() => {
 try {
-
 	const vc = new VConsole()
 
 	const lv = JSON.parse($("nazo").html())
-	const path = location.pathname.match(/\/(.*)\./)[1]
-
+	const debug = location.hostname == "localhost"
+	const path = location.pathname.slice(debug ? 1 : 13)
+		.replace(/\..+?$/, "") || "index"
 	const $body = $("body").append(`
 <style>
 h1 {
@@ -118,7 +118,7 @@ ${ lv.note ? `
 		const $in = $(`<input />`).appendTo($play)
 			.val(lv.ascend.default)
 		const jump = f => {
-			if (f) location.href = $in.val() + ".html"
+			if (f) location.href = (debug ? "" : "HardWayNazo/") + $in.val() + ".html"
 		}
 		if (lv.ascend.answer) $in
 			.on("input", () => jump($in.val() == lv.ascend.answer))
