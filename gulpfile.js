@@ -6,6 +6,6 @@ exports.default = function() {
 	return src("src/main.js")
 		.pipe(browserify())
 		.pipe(rename("buddle.js"))
-        .pipe(dest("src"))
+        .pipe(dest("docs"))
 }
 
