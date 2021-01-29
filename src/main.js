@@ -1,15 +1,20 @@
-const $			= require("jquery")
-const VConsole	= require("vconsole")
+const
+$			= require("jquery")
+VConsole	= require("vconsole")
+AES			= require("crypto-js/aes")
 
-$(() => {
 try {
-	const vc = new VConsole()
 
-	const lv = JSON.parse($("nazo").html())
-	const debug = location.hostname == "localhost"
-	const path = location.pathname.slice(debug ? 1 : 13)
-		.replace(/\..+?$/, "") || "index"
-	const $body = $("body").append(`
+const
+vc = new VConsole(),
+
+lv = JSON.parse($("nazo").html()),
+debug = location.hostname == "localhost"
+prompt = debug ? "%" : "#"
+path = location.pathname.slice(debug ? 1 : 13)
+	.replace(/\..+?$/, "") || "index",
+
+$body = $("body").append(`
 <style>
 h1 {
 	font-size: 70px;
@@ -72,60 +77,61 @@ ${ lv.note ? `
 }
 </style>
 `),
-	$title = $(`<title>${ lv.id }# HardWayNazo</title>`).appendTo($("head"))
-	$main = $(`
+$title = $(`<title>${ lv.id }${prompt} HardWayNazo</title>`).appendTo($("head"))
+$main = $(`
 <main>
-	<h1>${ lv.id }# ${path}</h1>
+	<h1>${ lv.id }${prompt} ${path}</h1>
 	<p class="hint"></p>
 	<p class="note"></p>
 	<p class="play"></p>
 </main>
 `).appendTo($body),
-	$hint = $(".hint"),
-	$note = $(".note"),
-	$play = $(".play")
+$hint = $(".hint"),
+$note = $(".note"),
+$play = $(".play")
 	
-	const esc = s => s
-		.replace(/ /g, "&nbsp;")
-		.replace(/</g, "&lt;").replace(/>/g, "&gt;")
-		.replace(/\*\*(.*)\*\*/g, "<b>$1</b>")
-	const out = (t, $t, tw) => {
-		if (!t) return
-		let c = 0, b = 0
-		for (let l of t) {
-			l += " "
-			let m = l[0] == "!",
-				$l = $(m ? `<code></code>` : `<p></p>`).appendTo($t)
-			if (m) l = l.slice(1)
-			if (tw)
-				for (let i = 0; i < l.length; i ++) setTimeout(() => {
-					let s = $l.html()
-					if (l.slice(i - 1, i + 1) == "**") b ++
-					else if (b == 2) {
-						b = 0
-						s = esc(s)
-					}
-					$l.html(s + l[i])
-				}, ++ c * 120)
-			else $l.html(esc(l))
-		}
+const
+esc = s => s
+	.replace(/ /g, "&nbsp;")
+	.replace(/\*\*(.*)\*\*/g, "<b>$1</b>")
+out = (n, $t) => {
+	if (! lv[n]) return
+	const { text: t, typewriter: tw } = lv[n]
+	let c = 0, b = 0
+	for (let l of t) {
+		l += " "
+		let m = l[0] == "!",
+			$l = $(m ? `<code></code>` : `<p></p>`).appendTo($t)
+		if (m) l = l.slice(1)
+		if (tw)
+			for (let i = 0; i < l.length; i ++) setTimeout(() => {
+				let s = $l.html()
+				if (l.slice(i - 1, i + 1) == "**") b ++
+				else if (b == 2) {
+					b = 0
+					s = esc(s)
+				}
+				$l.html(s + l[i])
+			}, ++ c * tw)
+		else $l.html(esc(l))
 	}
+}
 
-	out(lv.hint.text, $hint, lv.hint.typewriter)
-	if (lv.note) out(lv.note.text, $note, false)
+out("hint", $hint)
+out("note", $note)
 
-	if (lv.ascend.method == "input") {
-		const $in = $(`<input />`).appendTo($play)
-			.val(lv.ascend.default)
-		const jump = f => {
-			if (f) location.href = (debug ? "" : "HardWayNazo/") + $in.val() + ".html"
-		}
-		if (lv.ascend.answer) $in
-			.on("input", () => jump($in.val() == lv.ascend.answer))
-		else $(`<button>Nazo!</button>`).appendTo($play)
-			.on("click", jump)
+if (lv.ascend.method == "input") {
+	const $in = $(`<input />`).appendTo($play)
+		.val(lv.ascend.default)
+	const jump = f => {
+		if (f) location.href = (debug ? "" : "HardWayNazo/") + $in.val() + ".html"
 	}
+	if (lv.ascend.answer) $in
+		.on("input", () => jump($in.val() == lv.ascend.answer))
+	else $(`<button>Nazo!</button>`).appendTo($play)
+		.on("click", jump)
+}
 
-} catch(e) { console.error(e.message || e) }
-})
+}
+catch (e) { console.error(e.message || e) }
 
