@@ -23,6 +23,7 @@ h1 {
 }
 code {
 	display: block;
+	font-family: consolas, 'Courier New', Courier, monospace;
 }
 .hint {
 	font-size: 26px !important;
