@@ -125,7 +125,7 @@ if (lv.ascend.method == "input") {
 	const $in = $(`<input />`).appendTo($play)
 		.val(lv.ascend.default)
 	const jump = f => {
-		if (f) location.href = (debug ? "" : "HardWayNazo/") + $in.val() + ".html"
+		if (f) location.href = $in.val() + ".html"
 	}
 	if (lv.ascend.answer) $in
 		.on("input", () => jump($in.val() == lv.ascend.answer))
