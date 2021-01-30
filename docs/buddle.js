@@ -15495,15 +15495,16 @@ AES			= require("crypto-js/aes")
 try {
 
 const
-vc = new VConsole(),
+vc		= new VConsole(),
 
-lv = JSON.parse($("nazo").html()),
-debug = location.hostname == "localhost"
-prompt = debug ? "%" : "#"
-path = location.pathname.slice(debug ? 1 : 13)
+lv		= JSON.parse($("nazo").html()),
+debug	= location.hostname == "localhost"
+prompt	= debug ? "%" : "#"
+path	= location.pathname.slice(debug ? 1 : 13)
 	.replace(/\..+?$/, "") || "index",
+title	= lv.id + prompt + " " + path,
 
-$body = $("body").append(`
+$body	= $("body").append(`
 <style>
 h1 {
 	font-size: 70px;
@@ -15566,18 +15567,18 @@ ${ lv.note ? `
 }
 </style>
 `),
-$title = $(`<title>${ lv.id }${prompt} HardWayNazo</title>`).appendTo($("head"))
-$main = $(`
+$title	= $(`<title>${title} | HardWayNazo</title>`).appendTo($("head"))
+$main	= $(`
 <main>
-	<h1>${ lv.id }${prompt} ${path}</h1>
+	<h1>${title}</h1>
 	<p class="hint"></p>
 	<p class="note"></p>
 	<p class="play"></p>
 </main>
 `).appendTo($body),
-$hint = $(".hint"),
-$note = $(".note"),
-$play = $(".play")
+$hint	= $(".hint"),
+$note	= $(".note"),
+$play	= $(".play")
 	
 const
 esc = s => s
