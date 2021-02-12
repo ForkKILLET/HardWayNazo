@@ -1,4 +1,7 @@
+node_modules/
+
+*.swp
 *.c_html
 
-node_modules/
-*.swp
+favicon.ico
+

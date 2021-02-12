@@ -6,24 +6,11 @@ const rename		= require("gulp-rename")
 const through2		= require("through2")
 const cryptojs		= require("crypto-js")
 
-const buddle = () => src("src/main.js")
+const bundle = () => src("src/main.js")
 	.pipe(browserify())
-	.pipe(rename("buddle.js"))
+	.pipe(rename("bundle.js"))
     .pipe(dest("docs"))
 
-// Usage:
-//
-// <!-- docs/sample.c_html -->
-// <p>Text</p>
-// <p>
-//     <!-- crypto(key 123) Encrypted text -->
-// </p>
-//
-// <!-- docs/sample.html -->
-// <p>Text</p>
-// <p>
-//     
-// </p>
 const crypto = () => src([ "docs/**/*.c_html" ])
 	.pipe(through2.obj((fi, _, cb) => {
 		if (fi.isBuffer()) fi.contents = Buffer.from(
@@ -42,7 +29,8 @@ const crypto = () => src([ "docs/**/*.c_html" ])
 	.pipe(dest("docs"))
 
 module.exports = {
-	buddle, crypto,
-	default: parallel(buddle, crypto)
+	bundle, crypto,
+	all: parallel(bundle, crypto),
+	default: bundle
 }
 
