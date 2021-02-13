@@ -16,8 +16,7 @@ title	= lv.id + prompt + " " + path
 
 const
 $body	= $("body"),
-$title	= $(`<title>${title} | HardWayNazo</title>`)
-	.appendTo($("head")),
+$title	= $(`<title>${title} | HardWayNazo</title>`).appendTo($("head")),
 $main	= $(`
 <main>
 	<h1>${title}</h1>
