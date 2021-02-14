@@ -6,6 +6,7 @@ const res_head = f => ({
 	"Content-Type": {
 		html:	"text/html",
 		htm:	"text/html",
+		c_html:	"text/html",
 		js:		"application/javascript",
 		css:	"text/css",
 		png:	"image/png",

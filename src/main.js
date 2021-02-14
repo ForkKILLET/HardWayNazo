@@ -3,15 +3,13 @@ $			= require("jquery"),
 cryptojs	= require("crypto-js"),
 qs			= require("qs")
 
-try {
-
-let lv	= JSON.parse($("nazo").html())
+let lv	= JSON.parse($("nazo").text()) // Note: Get rid of comments.
 
 const
 debug	= location.hostname == "localhost",
 prompt	= debug ? "%" : "#",
 path	= location.pathname.slice(debug ? 1 : 13)
-	.replace(/\..+?$/, "") || "index",
+	.replace(/\..+?$/, "") ?? "index",
 title	= lv.id + prompt + " " + path
 
 const
@@ -56,22 +54,33 @@ out = (n, $t) => {
 	}
 }
 
-const q = Object.entries(qs.parse(location.search.slice(1)))
-if (q.length && lv.crypto[q[0][0]]) {
-	let f = true, d, o, c
-	try {
-		d = cryptojs.AES.decrypt(
-			lv.crypto[q[0][0]], cryptojs.enc.Utf8.parse(q[0][1]),
-			{ iv: { words: [ 0, 0, 0, 0 ], sigBytes: 16 } }
-		).toString(cryptojs.enc.Utf8)
-		o = JSON.parse(d)
-		c = lv.crypto
+const
+c = lv.crypto ?? {},
+q = Object.entries(qs.parse(location.search.slice(1)))
+
+if (q.length) {
+	const t = c[q[0][0]]
+	if (typeof t === "string") {
+		let f = true, d, o
+		try {
+			d = cryptojs.AES.decrypt(
+				t, cryptojs.enc.Utf8.parse(q[0][1]),
+				{ iv: { words: [ 0, 0, 0, 0 ], sigBytes: 16 } }
+			).toString(cryptojs.enc.Utf8)
+			o = JSON.parse(d)
+		}
+		catch {
+			f = false
+		}
+		if (f) {
+			lv = o
+			lv.crypto = c
+		}
 	}
-	catch (_) {
-		f = false
-	}
-	if (f) {
-		lv = o
+	else if (typeof t === "object") { 
+	// Note: Pass when `t === null`.
+	// Debug: Directly access `.c_html` files.
+		lv = t
 		lv.crypto = c
 	}
 }
@@ -93,9 +102,8 @@ code {
 }
 .hint {
 	font-size: 26px !important;
-	text-align: ${ lv.hint.align || "center" };
+	text-align: ${ lv.hint.align ?? "center" };
 }
-${ lv.note ? `
 .note {
 	position: fixed;
 	bottom: 40px;
@@ -103,9 +111,7 @@ ${ lv.note ? `
 	width: 100%;
 
 	font-size: 20px !important;
-	text-align: ${ lv.note.align || "right" };
-}
-` : ""
+	text-align: ${ lv.note?.align ?? "right" };
 }
 .play {
 	text-align: center;
@@ -130,14 +136,14 @@ ${ lv.note ? `
 out("hint", $hint)
 out("note", $note)
 
-let dft = lv.ascend.default || ""
+let dft = lv.ascend.default ?? ""
 switch (lv.ascend.method) {
 	case "crypto":
 		dft += `?${ lv.ascend.token }=`
 	case "input":
 		const $in = $(`<input />`).appendTo($play).val(dft)
 		const jump = f => {
-			if (f) location.href = "/" + $in.val()
+			if (f) location.href = (debug ? "/" : "/HardWayNazo/") + $in.val()
 		}
 		if (lv.ascend.answer) $in
 			.on("input", () => jump($in.val() == lv.ascend.answer))
@@ -145,7 +151,4 @@ switch (lv.ascend.method) {
 			.on("click", jump)
 		break
 }
-
-}
-catch (e) { console.error(e.message || e) }
 
