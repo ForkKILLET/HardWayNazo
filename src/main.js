@@ -3,7 +3,7 @@ $			= require("jquery"),
 cryptojs	= require("crypto-js"),
 qs			= require("qs")
 
-let lv	= JSON.parse($("nazo").text()) // Note: Get rid of comments.
+let lv	= JSON.parse($("nazo").html())
 
 const
 debug	= location.hostname == "localhost",
@@ -30,7 +30,9 @@ $play	= $(".play")
 const
 esc = s => s
 	.replace(/ /g, "&nbsp;")
-	.replace(/\*\*(.*)\*\*/g, "<b>$1</b>"),
+	.replace(/\^\^(#[\da-f]+);(.+?)\^\^/, (_, color, txt) =>
+		`<span style="color: ${color}">${txt}</span>`)
+	.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>"),
 out = (n, $t) => {
 	if (! lv[n]) return
 	const { text: t, typewriter: tw } = lv[n]
@@ -67,6 +69,7 @@ if (q.length) {
 				t, cryptojs.enc.Utf8.parse(q[0][1]),
 				{ iv: { words: [ 0, 0, 0, 0 ], sigBytes: 16 } }
 			).toString(cryptojs.enc.Utf8)
+			console.log(d)
 			o = JSON.parse(d)
 		}
 		catch {
@@ -151,4 +154,7 @@ switch (lv.ascend.method) {
 			.on("click", jump)
 		break
 }
+
+if (debug)
+	Object.assign(window, { lv, qs, cryptojs })
 

@@ -23,10 +23,10 @@ const crypto = () => src([ "docs/**/*.c_html" ])
 	.pipe(through2.obj((fi, _, cb) => {
 		if (fi.isBuffer()) fi.contents = Buffer.from(
 			fi.contents.toString()
-				.replace(/<!--crypto\(([^]+?)\)-->([^]+?)<!--\/crypto-->/g, () =>
+				.replace(/<!--crypto\(([^]+?)\)-->([^]+?)<!--\/crypto-->/g, (_, key, txt) =>
 					`"` + cryptojs.AES.encrypt(
-						RegExp.$2,
-						cryptojs.enc.Utf8.parse(RegExp.$1),
+						txt,
+						cryptojs.enc.Utf8.parse(key),
 						{ iv: { words: [ 0, 0, 0, 0 ], sigBytes: 16 } }
 					).toString() + `"`
 				)
